@@ -1,5 +1,5 @@
-import { InventoryDashboard } from "@/components/stock-in/inventory-dashboard";
+import { InventoryAdvanced } from "@/components/stock-in/inventory-advanced";
 
 export default function InventoryPage() {
-  return <InventoryDashboard />;
+  return <InventoryAdvanced />;
 }

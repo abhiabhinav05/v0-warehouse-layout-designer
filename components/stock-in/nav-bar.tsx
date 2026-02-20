@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, PackagePlus, Archive, FileText, Warehouse } from "lucide-react";
+import { LayoutDashboard, PackagePlus, Archive, FileText, Warehouse, TrendingUp, TrendingDown, BarChart3 } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Layout Designer", icon: LayoutDashboard },
   { href: "/stock-in", label: "Stock-In", icon: PackagePlus },
+  { href: "/stock-in-flow", label: "Flow Analytics", icon: TrendingUp },
   { href: "/inventory", label: "Inventory", icon: Archive },
+  { href: "/stock-out", label: "Stock-Out", icon: TrendingDown },
+  { href: "/reports", label: "Reports", icon: BarChart3 },
   { href: "/audit-log", label: "Audit Log", icon: FileText },
 ];
 
