@@ -80,14 +80,20 @@ export interface StockInRequest {
   status: StockInStatus;
   grnNumber?: string;
   createdAt: string;
+  createdBy: string; // User ID who created the request
   approvedAt?: string;
+  approvedBy?: string; // User ID who approved
   rejectedAt?: string;
+  rejectedBy?: string; // User ID who rejected
   rejectionReason?: string;
   modificationNote?: string;
   vehicleEntry?: VehicleEntry;
   inspection?: InspectionResult;
+  inspectedBy?: string; // User ID who performed inspection
   putAwayAllocations?: PutAwayAllocation[];
+  putAwayBy?: string; // User ID who performed put-away
   completedAt?: string;
+  completedBy?: string; // User ID who marked as completed
 }
 
 export interface InventoryItem {
@@ -109,7 +115,9 @@ export interface InventoryItem {
   levelName: string;
   partitionId: string;
   partitionName: string;
+  warehouseId: string; // Which warehouse this inventory belongs to
   placedAt: string;
+  placedBy: string; // User ID who placed the item
 }
 
 export interface AuditEntry {
@@ -119,7 +127,10 @@ export interface AuditEntry {
   entity: string;
   entityId: string;
   details: string;
-  performedBy: string;
+  performedBy: string; // User ID
+  performedByName: string; // User name
+  userRole: string; // User role at time of action
+  warehouseId: string; // Which warehouse the action was performed in
 }
 
 export interface WarehouseZoneInfo {
