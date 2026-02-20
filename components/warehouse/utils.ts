@@ -59,7 +59,8 @@ export function createWarehouseNode(data: {
 export function createElementNode(
   elementType: ElementData["elementType"],
   _parentPosition: { x: number; y: number },
-  parentSize: { width: number; height: number }
+  parentSize: { width: number; height: number },
+  parentId: string = "warehouse"
 ): Node<ElementData> {
   const id = `${elementType}-${nanoid(6)}`;
   const w = elementType === "wall" ? 200 : elementType === "gate" ? 80 : 150;
@@ -86,7 +87,7 @@ export function createElementNode(
       rotation: 0,
       elementType,
     },
-    parentId: "warehouse",
+    parentId,
     extent: "parent" as const,
     style: { width: w, height: h },
   };

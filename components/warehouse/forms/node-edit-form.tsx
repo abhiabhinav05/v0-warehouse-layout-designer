@@ -14,6 +14,9 @@ export function NodeEditForm({ node, onUpdate, onClose }: NodeEditFormProps) {
   const [color, setColor] = useState((node.data as Record<string, unknown>).color as string || "#CBD5E1");
   const [width, setWidth] = useState((node.data as Record<string, unknown>).width as number || 100);
   const [height, setHeight] = useState((node.data as Record<string, unknown>).height as number || 50);
+  const [rotation, setRotation] = useState((node.data as Record<string, unknown>).rotation as number || 0);
+
+  const isElement = node.type === "element";
 
   useEffect(() => {
     const d = node.data as Record<string, unknown>;
@@ -21,11 +24,16 @@ export function NodeEditForm({ node, onUpdate, onClose }: NodeEditFormProps) {
     setColor((d.color as string) || "#CBD5E1");
     setWidth((d.width as number) || 100);
     setHeight((d.height as number) || 50);
+    setRotation((d.rotation as number) || 0);
   }, [node]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onUpdate(node.id, { label, color, width, height });
+    const updateData: Record<string, unknown> = { label, color, width, height };
+    if (isElement) {
+      updateData.rotation = rotation;
+    }
+    onUpdate(node.id, updateData);
     onClose();
   };
 
@@ -107,6 +115,40 @@ export function NodeEditForm({ node, onUpdate, onClose }: NodeEditFormProps) {
           />
         </div>
       </div>
+      {isElement && (
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-medium text-muted-foreground">
+            Rotation (degrees)
+          </label>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              value={rotation}
+              onChange={(e) => setRotation(Number(e.target.value) % 360)}
+              min={0}
+              max={359}
+              step={90}
+              className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
+            />
+            <div className="flex gap-1">
+              {[0, 90, 180, 270].map((deg) => (
+                <button
+                  key={deg}
+                  type="button"
+                  onClick={() => setRotation(deg)}
+                  className={`rounded-md border px-2 py-1 text-xs font-medium transition-colors ${
+                    rotation === deg
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-input bg-background text-foreground hover:bg-accent"
+                  }`}
+                >
+                  {deg}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
       <button
         type="submit"
         className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"

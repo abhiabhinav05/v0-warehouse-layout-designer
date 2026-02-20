@@ -45,7 +45,7 @@ interface SidePanelProps {
     length: number;
   }) => void;
   onUpdateNode: (id: string, data: Record<string, unknown>) => void;
-  onAddElement: (type: ElementData["elementType"]) => void;
+  onAddElement: (type: ElementData["elementType"], parentId?: string) => void;
   onAddZone: (
     type: ZoneType,
     formData?: {
@@ -98,6 +98,7 @@ export function SidePanel({
   const [showZoneForm, setShowZoneForm] = useState(false);
   const [showStructureForm, setShowStructureForm] = useState(false);
   const [selectedZoneForStructure, setSelectedZoneForStructure] = useState<string>("");
+  const [selectedParentForElement, setSelectedParentForElement] = useState<string>("");
 
   const toggleSection = (section: SidebarSection) => {
     setOpenSection((prev) => (prev === section ? null : section));
@@ -302,27 +303,51 @@ export function SidePanel({
               </button>
               {openSection === "elements" && (
                 <div className="border-b border-border bg-accent/20 p-4">
-                  <div className="grid grid-cols-2 gap-2">
-                    {(
-                      [
-                        { type: "wall", label: "Wall", color: "#94A3B8" },
-                        { type: "gutter", label: "Gutter", color: "#CBD5E1" },
-                        { type: "walkway", label: "Walkway", color: "#E2E8F0" },
-                        { type: "gate", label: "Gate", color: "#FCA5A5" },
-                      ] as const
-                    ).map((el) => (
-                      <button
-                        key={el.type}
-                        onClick={() => onAddElement(el.type)}
-                        className="flex items-center gap-2 rounded-md border border-input bg-background px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs font-medium text-muted-foreground">
+                        Place inside
+                      </label>
+                      <select
+                        value={selectedParentForElement}
+                        onChange={(e) => setSelectedParentForElement(e.target.value)}
+                        className="rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
                       >
-                        <span
-                          className="inline-block h-3 w-3 rounded-sm"
-                          style={{ backgroundColor: el.color }}
-                        />
-                        {el.label}
-                      </button>
-                    ))}
+                        <option value="">Warehouse</option>
+                        {zones.map((z) => (
+                          <option key={z.id} value={z.id}>
+                            {(z.data as Record<string, unknown>).label as string}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {(
+                        [
+                          { type: "wall", label: "Wall", color: "#94A3B8" },
+                          { type: "gutter", label: "Gutter", color: "#CBD5E1" },
+                          { type: "walkway", label: "Walkway", color: "#E2E8F0" },
+                          { type: "gate", label: "Gate", color: "#FCA5A5" },
+                        ] as const
+                      ).map((el) => (
+                        <button
+                          key={el.type}
+                          onClick={() =>
+                            onAddElement(
+                              el.type,
+                              selectedParentForElement || undefined
+                            )
+                          }
+                          className="flex items-center gap-2 rounded-md border border-input bg-background px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+                        >
+                          <span
+                            className="inline-block h-3 w-3 rounded-sm"
+                            style={{ backgroundColor: el.color }}
+                          />
+                          {el.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}

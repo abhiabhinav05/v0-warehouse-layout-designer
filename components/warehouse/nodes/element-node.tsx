@@ -8,7 +8,7 @@ import {
   Position,
 } from "@xyflow/react";
 import type { Node } from "@xyflow/react";
-import { Copy, Trash2, Pencil } from "lucide-react";
+import { Copy, Trash2, Pencil, RotateCw } from "lucide-react";
 import type { ElementData } from "../types";
 
 type ElementNodeProps = NodeProps<Node<ElementData>> & {
@@ -63,6 +63,14 @@ function ElementNodeComponent({ id, data, selected }: ElementNodeProps) {
           data-node-id={id}
         >
           <Pencil size={13} />
+        </button>
+        <button
+          className="rounded p-1 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
+          title="Rotate 90°"
+          data-action="rotate"
+          data-node-id={id}
+        >
+          <RotateCw size={13} />
         </button>
         <button
           className="rounded p-1 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"

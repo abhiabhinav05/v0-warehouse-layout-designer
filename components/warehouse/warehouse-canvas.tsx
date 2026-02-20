@@ -102,18 +102,26 @@ export function WarehouseCanvas() {
 
   // Add internal elements (walls, gutters, walkways, gates)
   const handleAddElement = useCallback(
-    (type: ElementData["elementType"]) => {
+    (type: ElementData["elementType"], parentId?: string) => {
       if (!warehouseNode) return;
-      const wStyle = warehouseNode.style || {};
-      const pw = (wStyle.width as number) || 800;
-      const ph = (wStyle.height as number) || 600;
-      const newNode = createElementNode(type, warehouseNode.position, {
-        width: pw,
-        height: ph,
-      });
+      const resolvedParentId = parentId || "warehouse";
+      const parentNode =
+        resolvedParentId !== "warehouse"
+          ? nodes.find((n) => n.id === resolvedParentId)
+          : warehouseNode;
+      if (!parentNode) return;
+      const pStyle = parentNode.style || {};
+      const pw = (pStyle.width as number) || 800;
+      const ph = (pStyle.height as number) || 600;
+      const newNode = createElementNode(
+        type,
+        parentNode.position,
+        { width: pw, height: ph },
+        resolvedParentId
+      );
       setNodes((nds) => [...nds, newNode]);
     },
-    [warehouseNode, setNodes]
+    [warehouseNode, nodes, setNodes]
   );
 
   // Add zones with optional form data
@@ -285,6 +293,17 @@ export function WarehouseCanvas() {
             setIsEditingWarehouse(false);
             if (!sidebarOpen) setSidebarOpen(true);
             return;
+          case "rotate": {
+            const targetNode = nodes.find((n) => n.id === nodeId);
+            if (targetNode && targetNode.type === "element") {
+              const currentRotation =
+                ((targetNode.data as Record<string, unknown>).rotation as number) || 0;
+              handleUpdateNode(nodeId, {
+                rotation: (currentRotation + 90) % 360,
+              });
+            }
+            return;
+          }
           case "duplicate":
             handleDuplicate(nodeId);
             return;
@@ -304,8 +323,10 @@ export function WarehouseCanvas() {
       }
     },
     [
+      nodes,
       handleDuplicate,
       handleDelete,
+      handleUpdateNode,
       sidebarOpen,
     ]
   );
